@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>appendRule, deleteRule, findRule</title>
+  <style>
+#ball {
+  height: 100px;
+  width: 100px;
+  background-color: blue;
+  border-radius: 50%;
+  -webkit-animation: bounce 5s infinite linear alternate;
+  animation: bounce 5s infinite linear alternate;
+}
+@-webkit-keyframes bounce {
+  0% {transform: translate(0vw,0vh);}
+  10% {transform: translate(0vw,10vh);}
+  20% {transform: translate(0vw,20vh);}
+  30% {transform: translate(0vw,30vh);}
+  40% {transform: translate(0vw,40vh);}
+  50% {transform: translate(0vw,50vh);}
+  60% {transform: translate(0vw,60vh);}
+  70% {transform: translate(0vw,70vh);}
+  80% {transform: translate(0vw,80vh);}
+  90% {transform: translate(0vw,90vh);}
+  100% {transform: translate(0vw,100vh);}
+}
+@keyframes bounce {
+  0% {transform: translate(0vw,0vh);}
+  10% {transform: translate(0vw,10vh);}
+  20% {transform: translate(0vw,20vh);}
+  30% {transform: translate(0vw,30vh);}
+  40% {transform: translate(0vw,40vh);}
+  50% {transform: translate(0vw,50vh);}
+  60% {transform: translate(0vw,60vh);}
+  70% {transform: translate(0vw,70vh);}
+  80% {transform: translate(0vw,80vh);}
+  90% {transform: translate(0vw,90vh);}
+  100% {transform: translate(0vw,100vh);}
+}
+
+  </style>
+</head>
+<body>
+<div id="ball"></div>
+<button id="button">Change the path</button>
+
+<script>
+var pathChanger = {
+  anim : document.styleSheets[0].cssRules[1],
+  
+  init : function () {
+    pathChanger.events();
+        if(pathChanger.anim.insertRule) {
+          pathChanger.anim.appendRule = pathChanger.anim.insertRule;
+          console.log('polyfill');
+        }
+  },
+  
+  events  : function () {
+    var button = document.getElementById('button');
+    button.addEventListener('click', function() {
+      pathChanger.changePath();
+    }, false);
+    
+  },
+  
+  changePath : function () {
+    var selectorToRemove = pathChanger.findAKeyframe();
+    var selectorToAdd =  pathChanger.getAPercent();
+    pathChanger.removeKeyframe(selectorToRemove);
+    pathChanger.addKeyframeValue(selectorToAdd);
+  },
+   
+  getAPercent : function () {
+    return Math.floor(Math.random() * 100.9999999);
+  },
+  
+  findAKeyframe : function (exists) {
+    
+    var randomNumber, rule;
+    do {
+        randomNumber = pathChanger.getAPercent(); 
+        rule = pathChanger.doesKeyframeExist(randomNumber)
+    } while (!rule);
+    
+    return randomNumber;
+  },
+  
+  doesKeyframeExist : function (number) {
+    var anim = pathChanger.anim;
+    var exists = anim.findRule(number + '%')
+    console.dir(exists)
+    return exists || false;
+  },
+  
+  addKeyframeValue : function (selector) {
+    var anim = document.styleSheets[0].cssRules[1];
+    var left = pathChanger.getAPercent();
+    var top = pathChanger.getAPercent();
+    anim.appendRule(selector + '% { transform: translate(' + left + 'vw, ' + top + 'vh); animation-timing-function: ease-in-out}');
+  },
+  
+  removeKeyframe : function (selector) {
+    var anim = pathChanger.anim;
+    anim.deleteRule(selector + "%");
+  }
+  
+}
+
+pathChanger.init();</script>
+</body>
+</html>
